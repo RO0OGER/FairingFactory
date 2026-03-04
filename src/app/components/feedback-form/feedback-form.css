@@ -1,0 +1,157 @@
+.feedback {
+  padding: 80px 20px;
+  background: #ffffff;
+}
+
+.feedback__container {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.feedback__form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.feedback__checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rating-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.rating-option {
+  cursor: pointer;
+}
+
+.rating-input {
+  display: none;
+}
+
+.rating-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid #d0d0d0;
+  border-radius: 50%;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555555;
+  transition: all 150ms ease;
+}
+
+.rating-option--selected .rating-label {
+  background: #d10000;
+  border-color: #d10000;
+  color: #ffffff;
+}
+
+.rating-option:not(.rating-option--selected):hover .rating-label {
+  border-color: #d10000;
+  color: #d10000;
+}
+
+.rating-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #888888;
+  margin-top: 4px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.form-input {
+  padding: 10px 14px;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 150ms ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #d10000;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-error {
+  font-size: 0.8rem;
+  color: #d10000;
+}
+
+.form-error-global {
+  font-size: 0.875rem;
+  color: #d10000;
+  text-align: center;
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.875rem;
+  color: #555555;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.form-checkbox input[type='checkbox'] {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #d10000;
+}
+
+.btn--submit {
+  align-self: flex-start;
+  min-width: 180px;
+}
+
+.btn--submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.form-success {
+  text-align: center;
+  padding: 48px 24px;
+  background: #f7f7f7;
+  border-radius: 12px;
+}
+
+.form-success h3 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.form-success p {
+  color: #555555;
+}

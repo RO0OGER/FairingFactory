@@ -1,0 +1,89 @@
+<section class="feedback" id="feedback">
+  <div class="feedback__container">
+    <div class="section-header">
+      <h2 class="section-title">Dein Feedback</h2>
+      <p class="section-subtitle">
+        Hilf uns, das Angebot zu verbessern – dein Feedback ist anonym und dauert nur 1 Minute.
+      </p>
+    </div>
+
+    @if (success()) {
+      <div class="form-success">
+        <h3>Danke für dein Feedback!</h3>
+        <p>Deine Antworten helfen uns, das Angebot zu verbessern.</p>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="feedback__form" novalidate>
+        <div class="form-group">
+          <label class="form-label">Wie gefällt dir die Idee? *</label>
+          <div class="rating-group">
+            @for (r of ratings; track r) {
+              <label
+                class="rating-option"
+                [class.rating-option--selected]="form.value.rating === r"
+              >
+                <input type="radio" formControlName="rating" [value]="r" class="rating-input" />
+                <span class="rating-label">{{ r }}</span>
+              </label>
+            }
+          </div>
+          <div class="rating-legend">
+            <span>1 = Nicht interessant</span>
+            <span>5 = Sehr interessant</span>
+          </div>
+          @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
+            <span class="form-error">Bitte wähle eine Bewertung.</span>
+          }
+        </div>
+
+        <div class="feedback__checkboxes">
+          <label class="form-checkbox">
+            <input type="checkbox" formControlName="would_buy" />
+            <span>Ich würde ein Fairing-Kit von Fairing Factory kaufen.</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" formControlName="price_ok" />
+            <span>Der Preis erscheint mir angemessen für geprüfte Schweizer Qualität.</span>
+          </label>
+          <label class="form-checkbox">
+            <input type="checkbox" formControlName="swiss_quality_important" />
+            <span>Eine Qualitätsprüfung in der Schweiz ist mir wichtig.</span>
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label for="free_text" class="form-label">Kommentar / Anregungen (optional)</label>
+          <textarea
+            id="free_text"
+            formControlName="free_text"
+            class="form-input form-textarea"
+            rows="3"
+            placeholder="Deine Gedanken, Wünsche oder Verbesserungsvorschläge..."
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="fb_email" class="form-label">E-Mail (optional, für Rückfragen)</label>
+          <input
+            id="fb_email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            placeholder="deine@email.ch"
+          />
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <span class="form-error">Bitte gib eine gültige E-Mail-Adresse ein.</span>
+          }
+        </div>
+
+        @if (error()) {
+          <p class="form-error-global">{{ error() }}</p>
+        }
+
+        <button type="submit" class="btn btn--primary btn--submit" [disabled]="loading()">
+          {{ loading() ? 'Wird gesendet...' : 'Feedback absenden' }}
+        </button>
+      </form>
+    }
+  </div>
+</section>

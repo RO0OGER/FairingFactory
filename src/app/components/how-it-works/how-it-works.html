@@ -1,0 +1,19 @@
+<section class="how-it-works" id="prozess">
+  <div class="hiw__container">
+    <div class="section-header">
+      <h2 class="section-title">So funktioniert's</h2>
+      <p class="section-subtitle">
+        Kein Dropshipping. Nur geprüfte Qualität direkt aus der Schweiz.
+      </p>
+    </div>
+    <div class="hiw__steps">
+      @for (step of steps; track step.number) {
+        <div class="hiw__step">
+          <div class="hiw__step-number">{{ step.number }}</div>
+          <h3 class="hiw__step-title">{{ step.title }}</h3>
+          <p class="hiw__step-text">{{ step.text }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>

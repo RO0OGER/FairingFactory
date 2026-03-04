@@ -1,0 +1,37 @@
+<section class="products" id="produkte">
+  <div class="products__container">
+    <div class="section-header">
+      <h2 class="section-title">Fairing-Kits</h2>
+      <p class="section-subtitle">
+        Alle Kits werden vor der Lieferung in der Schweiz qualitätsgeprüft. Preise inkl. Zoll und
+        Versand.
+      </p>
+    </div>
+    <div class="products__grid">
+      @for (product of products; track product.model) {
+        <div class="product-card" [class.product-card--unavailable]="!product.available">
+          <div class="product-card__image-placeholder"></div>
+          <div class="product-card__body">
+            <h3 class="product-card__model">{{ product.model }}</h3>
+            <p class="product-card__years">Baujahr {{ product.years }}</p>
+            <p class="product-card__desc">{{ product.description }}</p>
+          </div>
+          <div class="product-card__footer">
+            <div class="product-card__price">
+              <span class="product-card__price-label">ab CHF</span>
+              <span class="product-card__price-amount">{{ product.price }}</span>
+            </div>
+            @if (product.available) {
+              <a href="#kontakt" class="btn btn--outline btn--sm">Vorbestellen</a>
+            } @else {
+              <span class="product-card__badge-soon">Demnächst</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+    <p class="products__note">
+      * Weitere Modelle auf Anfrage. Alle Preise in CHF inkl. MwSt., Zoll und Versand.
+    </p>
+  </div>
+</section>

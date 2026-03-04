@@ -1,0 +1,49 @@
+.how-it-works {
+  padding: 80px 20px;
+  background: #f7f7f7;
+}
+
+.hiw__container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.hiw__steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.hiw__step {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 36px 28px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.hiw__step-number {
+  width: 48px;
+  height: 48px;
+  background: #d10000;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.hiw__step-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.hiw__step-text {
+  font-size: 0.95rem;
+  color: #555555;
+  line-height: 1.7;
+}
