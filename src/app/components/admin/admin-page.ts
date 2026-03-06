@@ -1,17 +1,19 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { AuthService } from '../../services/auth.service';
 import { ChatService, Conversation, Message } from '../../services/chat.service';
+import { CommunityPhoto, CommunityService } from '../../services/community.service';
+import { MotorcycleService } from '../../services/motorcycle.service';
 import { Product, ProductInput, ProductService } from '../../services/product.service';
 
 const GALLERY_SIZE = 4;
 
 @Component({
   selector: 'app-admin-page',
-  imports: [ReactiveFormsModule, RouterLink, DecimalPipe, DatePipe],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, DecimalPipe, DatePipe],
   templateUrl: './admin-page.html',
   styleUrl: './admin-page.css',
 })
@@ -19,11 +21,13 @@ export class AdminPage implements OnInit, OnDestroy {
   protected auth = inject(AuthService);
   private productService = inject(ProductService);
   private chatService = inject(ChatService);
+  private communityService = inject(CommunityService);
+  protected moto = inject(MotorcycleService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
   // ── Tab navigation ──────────────────────────────
-  readonly activeTab = signal<'products' | 'messages'>('products');
+  readonly activeTab = signal<'products' | 'messages' | 'community'>('products');
 
   // ── Products ────────────────────────────────────
   readonly products = signal<Product[]>([]);
@@ -43,6 +47,16 @@ export class AdminPage implements OnInit, OnDestroy {
   galleryPreviews: (string | null)[] = Array(GALLERY_SIZE).fill(null);
   currentGalleryImages: (string | null)[] = Array(GALLERY_SIZE).fill(null);
 
+  // Year tags (multi-year input)
+  yearTags: string[] = [];
+  newYearInput = '';
+
+  // Product make/model selectors (replace free-text model field)
+  readonly productModels = signal<string[]>([]);
+  readonly productModelsLoading = signal(false);
+  productMake = '';
+  productModelSelected = '';
+
   readonly form = this.fb.group({
     model: ['', Validators.required],
     years: ['', Validators.required],
@@ -50,6 +64,39 @@ export class AdminPage implements OnInit, OnDestroy {
     description: [''],
     available: [true],
   });
+
+  // ── Community ───────────────────────────────────
+  readonly pendingPhotos = signal<CommunityPhoto[]>([]);
+  readonly approvedPhotos = signal<CommunityPhoto[]>([]);
+  readonly communityLoading = signal(false);
+
+  async loadPendingPhotos() {
+    this.communityLoading.set(true);
+    const [pending, approved] = await Promise.all([
+      this.communityService.getPendingPhotos(),
+      this.communityService.getAdminApprovedPhotos(),
+    ]);
+    this.pendingPhotos.set((pending.data ?? []) as CommunityPhoto[]);
+    this.approvedPhotos.set((approved.data ?? []) as CommunityPhoto[]);
+    this.communityLoading.set(false);
+  }
+
+  async approvePhoto(id: string) {
+    await this.communityService.approvePhoto(id);
+    const photo = this.pendingPhotos().find((p) => p.id === id);
+    this.pendingPhotos.update((list) => list.filter((p) => p.id !== id));
+    if (photo) this.approvedPhotos.update((list) => [{ ...photo, approved: true }, ...list]);
+  }
+
+  async rejectPhoto(id: string) {
+    await this.communityService.rejectPhoto(id);
+    this.pendingPhotos.update((list) => list.filter((p) => p.id !== id));
+  }
+
+  async deleteApprovedPhoto(id: string) {
+    await this.communityService.deletePhoto(id);
+    this.approvedPhotos.update((list) => list.filter((p) => p.id !== id));
+  }
 
   // ── Messages ────────────────────────────────────
   readonly conversations = signal<Conversation[]>([]);
@@ -62,6 +109,8 @@ export class AdminPage implements OnInit, OnDestroy {
   private msgChannel: RealtimeChannel | null = null;
   private convChannel: RealtimeChannel | null = null;
 
+  readonly adminMakes = signal<string[]>([]);
+
   async ngOnInit() {
     if (!this.auth.authLoading() && !this.auth.isAdmin()) {
       this.router.navigate(['/']);
@@ -69,7 +118,65 @@ export class AdminPage implements OnInit, OnDestroy {
     }
     await this.loadProducts();
     await this.loadConversations();
+    await this.loadPendingPhotos();
     this.subscribeToNewConversations();
+    const makes = await this.moto.getMakes();
+    this.adminMakes.set(makes);
+  }
+
+  private async parseAndLoadProductMakeModel(modelString: string) {
+    const makes = this.adminMakes();
+    if (!makes.length || !modelString) return;
+    // Find make by checking if the model string starts with a known make (longest match wins)
+    const sorted = [...makes].sort((a, b) => b.length - a.length);
+    const make = sorted.find((m) => modelString.toLowerCase().startsWith(m.toLowerCase()));
+    if (!make) return;
+    this.productMake = make;
+    this.productModelsLoading.set(true);
+    const models = await this.moto.getModels(make);
+    this.productModels.set(models);
+    this.productModelsLoading.set(false);
+    const rest = modelString.slice(make.length).trim();
+    if (models.includes(rest)) {
+      this.productModelSelected = rest;
+    }
+  }
+
+  async onProductMakeChange() {
+    this.productModelSelected = '';
+    this.productModels.set([]);
+    this.form.get('model')?.setValue('');
+    if (!this.productMake) return;
+    this.productModelsLoading.set(true);
+    const models = await this.moto.getModels(this.productMake);
+    this.productModels.set(models);
+    this.productModelsLoading.set(false);
+  }
+
+  onProductModelChange() {
+    if (this.productMake && this.productModelSelected) {
+      this.form.get('model')?.setValue(`${this.productMake} ${this.productModelSelected}`);
+    }
+  }
+
+  addYearTag() {
+    const val = this.newYearInput.trim();
+    if (!val || this.yearTags.includes(val)) return;
+    this.yearTags = [...this.yearTags, val];
+    this.newYearInput = '';
+    this.form.get('years')?.setValue(this.yearTags.join(', '));
+  }
+
+  removeYearTag(index: number) {
+    this.yearTags = this.yearTags.filter((_, i) => i !== index);
+    this.form.get('years')?.setValue(this.yearTags.join(', '));
+  }
+
+  onYearInputKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.addYearTag();
+    }
   }
 
   ngOnDestroy() {
@@ -92,6 +199,11 @@ export class AdminPage implements OnInit, OnDestroy {
     this.galleryFiles = Array(GALLERY_SIZE).fill(null);
     this.galleryPreviews = Array(GALLERY_SIZE).fill(null);
     this.currentGalleryImages = Array(GALLERY_SIZE).fill(null);
+    this.yearTags = [];
+    this.newYearInput = '';
+    this.productMake = '';
+    this.productModelSelected = '';
+    this.productModels.set([]);
     this.formError.set(null);
     this.editingId.set(null);
     this.showForm.set(true);
@@ -112,6 +224,13 @@ export class AdminPage implements OnInit, OnDestroy {
     this.galleryFiles = Array(GALLERY_SIZE).fill(null);
     this.galleryPreviews = Array(GALLERY_SIZE).fill(null);
     this.currentGalleryImages = Array.from({ length: GALLERY_SIZE }, (_, i) => gallery[i] ?? null);
+    this.yearTags = product.years ? product.years.split(',').map((s) => s.trim()).filter(Boolean) : [];
+    this.newYearInput = '';
+    // Pre-populate product make/model selectors from existing model string
+    this.productMake = '';
+    this.productModelSelected = '';
+    this.productModels.set([]);
+    this.parseAndLoadProductMakeModel(product.model);
     this.formError.set(null);
     this.editingId.set(product.id);
     this.showForm.set(true);
@@ -152,6 +271,8 @@ export class AdminPage implements OnInit, OnDestroy {
     this.galleryFiles = Array(GALLERY_SIZE).fill(null);
     this.galleryPreviews = Array(GALLERY_SIZE).fill(null);
     this.currentGalleryImages = Array(GALLERY_SIZE).fill(null);
+    this.yearTags = [];
+    this.newYearInput = '';
     this.formError.set(null);
     this.form.reset();
   }

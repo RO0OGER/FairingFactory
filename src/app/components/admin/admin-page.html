@@ -21,6 +21,16 @@
           <span class="admin-tab__badge"></span>
         }
       </button>
+      <button
+        class="admin-tab"
+        [class.admin-tab--active]="activeTab() === 'community'"
+        (click)="activeTab.set('community')"
+      >
+        Community
+        @if (pendingPhotos().length > 0) {
+          <span class="admin-tab__badge"></span>
+        }
+      </button>
     </div>
     <div class="admin-header__actions">
       <span class="admin-header__email">{{ auth.currentUser()?.email }}</span>
@@ -117,6 +127,103 @@
           </div>
         }
       </div>
+    </main>
+  }
+
+  <!-- ── COMMUNITY TAB ── -->
+  @if (activeTab() === 'community') {
+    <main class="admin-main">
+
+      <!-- Pending -->
+      <div class="admin-section">
+        <div class="admin-section__head">
+          <h1 class="admin-section__title">
+            Ausstehend
+            @if (pendingPhotos().length > 0) {
+              <span class="admin-section__count">{{ pendingPhotos().length }}</span>
+            }
+          </h1>
+          <button class="btn btn--primary btn--sm" (click)="loadPendingPhotos()">Aktualisieren</button>
+        </div>
+
+        @if (communityLoading()) {
+          <div class="admin-state">Lädt...</div>
+        } @else if (pendingPhotos().length === 0) {
+          <div class="admin-state"><p>Keine ausstehenden Beiträge.</p></div>
+        } @else {
+          <div class="community-grid">
+            @for (photo of pendingPhotos(); track photo.id) {
+              <div class="community-card">
+                <div class="community-card__img-wrap">
+                  <img [src]="photo.photo_url" [alt]="photo.user_name" class="community-card__img" />
+                </div>
+                <div class="community-card__body">
+                  <p class="community-card__name">{{ photo.user_name }}</p>
+                  @if (photo.bike_model) {
+                    <p class="community-card__meta">{{ photo.bike_model }}</p>
+                  }
+                  @if (photo.social_media_tag) {
+                    <p class="community-card__social">&#64;{{ photo.social_media_tag }}</p>
+                  }
+                  <p class="community-card__date">{{ photo.created_at | date: 'dd.MM.yyyy HH:mm' }}</p>
+                </div>
+                <div class="community-card__actions">
+                  <button class="btn-action btn-action--approve" (click)="approvePhoto(photo.id)">
+                    Freigeben
+                  </button>
+                  <button class="btn-action btn-action--danger-outline" (click)="rejectPhoto(photo.id)">
+                    Löschen
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Approved / published -->
+      <div class="admin-section">
+        <div class="admin-section__head">
+          <h1 class="admin-section__title">
+            Freigegeben
+            @if (approvedPhotos().length > 0) {
+              <span class="admin-section__count">{{ approvedPhotos().length }}</span>
+            }
+          </h1>
+        </div>
+
+        @if (communityLoading()) {
+          <div class="admin-state">Lädt...</div>
+        } @else if (approvedPhotos().length === 0) {
+          <div class="admin-state"><p>Noch keine freigegebenen Beiträge.</p></div>
+        } @else {
+          <div class="community-grid">
+            @for (photo of approvedPhotos(); track photo.id) {
+              <div class="community-card">
+                <div class="community-card__img-wrap">
+                  <img [src]="photo.photo_url" [alt]="photo.user_name" class="community-card__img" />
+                </div>
+                <div class="community-card__body">
+                  <p class="community-card__name">{{ photo.user_name }}</p>
+                  @if (photo.bike_model) {
+                    <p class="community-card__meta">{{ photo.bike_model }}</p>
+                  }
+                  @if (photo.social_media_tag) {
+                    <p class="community-card__social">&#64;{{ photo.social_media_tag }}</p>
+                  }
+                  <p class="community-card__date">{{ photo.created_at | date: 'dd.MM.yyyy HH:mm' }}</p>
+                </div>
+                <div class="community-card__actions">
+                  <button class="btn-action btn-action--danger-outline" (click)="deleteApprovedPhoto(photo.id)">
+                    Löschen
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
     </main>
   }
 
@@ -239,21 +346,88 @@
 
       <div class="form-drawer__body">
         <form [formGroup]="form" (ngSubmit)="save()" class="product-form" novalidate>
-          <!-- Modell -->
+          <!-- Modell (via make/model selectors) -->
           <div class="form-group" [class.form-group--error]="isInvalid('model')">
             <label class="form-label">Modell *</label>
-            <input type="text" formControlName="model" class="form-input" placeholder="z.B. Kawasaki ZX-6R" />
+            <div class="product-make-row">
+              <div class="product-make-group">
+                <input
+                  type="text"
+                  list="product-makes-list"
+                  class="form-input"
+                  placeholder="Marke suchen..."
+                  [(ngModel)]="productMake"
+                  [ngModelOptions]="{standalone: true}"
+                  (change)="onProductMakeChange()"
+                />
+                <datalist id="product-makes-list">
+                  @for (make of adminMakes(); track make) {
+                    <option [value]="make"></option>
+                  }
+                </datalist>
+              </div>
+              <div class="product-make-group">
+                @if (productModelsLoading()) {
+                  <div class="form-input product-model-loading">Lädt Modelle...</div>
+                } @else {
+                  <input
+                    type="text"
+                    list="product-models-list"
+                    class="form-input"
+                    placeholder="Modell suchen..."
+                    [(ngModel)]="productModelSelected"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="onProductModelChange()"
+                    [disabled]="!productMake || productModels().length === 0"
+                  />
+                  <datalist id="product-models-list">
+                    @for (model of productModels(); track model) {
+                      <option [value]="model"></option>
+                    }
+                  </datalist>
+                }
+              </div>
+            </div>
+            @if (form.get('model')?.value) {
+              <span class="form-hint">Gesetzt: <strong>{{ form.get('model')?.value }}</strong></span>
+            }
             @if (isInvalid('model')) {
-              <span class="form-error">Pflichtfeld</span>
+              <span class="form-error">Pflichtfeld – Marke und Modell wählen</span>
             }
           </div>
 
           <!-- Baujahr -->
           <div class="form-group" [class.form-group--error]="isInvalid('years')">
             <label class="form-label">Baujahr *</label>
-            <input type="text" formControlName="years" class="form-input" placeholder="z.B. 2003–2016" />
+            @if (yearTags.length > 0) {
+              <div class="year-tags">
+                @for (tag of yearTags; track tag; let i = $index) {
+                  <span class="year-tag">
+                    {{ tag }}
+                    <button type="button" class="year-tag__remove" (click)="removeYearTag(i)">&times;</button>
+                  </span>
+                }
+              </div>
+            }
+            <div class="year-add-row">
+              <input
+                type="text"
+                class="form-input"
+                placeholder="z.B. 2003-2016 oder 2019"
+                [(ngModel)]="newYearInput"
+                [ngModelOptions]="{standalone: true}"
+                (keydown)="onYearInputKeydown($event)"
+              />
+              <button
+                type="button"
+                class="btn btn--primary btn--sm"
+                [disabled]="!newYearInput.trim()"
+                (click)="addYearTag()"
+              >+</button>
+            </div>
+            <span class="form-hint">Jahrgänge als Tags hinzufügen (z.B. 2003-2006, 2007, 2008-2012)</span>
             @if (isInvalid('years')) {
-              <span class="form-error">Pflichtfeld</span>
+              <span class="form-error">Pflichtfeld – mindestens ein Jahrgang hinzufügen</span>
             }
           </div>
 

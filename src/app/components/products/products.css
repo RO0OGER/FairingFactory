@@ -133,3 +133,196 @@
   font-size: 0.8rem;
   color: #888888;
 }
+
+/* Garage banner */
+.garage-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f7f7f7;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 10px 16px;
+  margin-bottom: 24px;
+  font-size: 0.875rem;
+  color: #555;
+  flex-wrap: wrap;
+}
+
+.garage-banner svg {
+  color: #888888;
+  flex-shrink: 0;
+}
+
+.garage-banner--match {
+  background: #f0faf4;
+  border-color: #a8dfc0;
+}
+
+.garage-banner--match svg {
+  color: #1a7a4a;
+}
+
+.garage-banner--no-match {
+  background: #fff5f5;
+  border-color: #f5c0c0;
+}
+
+.garage-banner--no-match svg {
+  color: #d10000;
+}
+
+.garage-banner--prompt {
+  background: #f7f7f7;
+  border-color: #e0e0e0;
+}
+
+.garage-banner--prompt svg {
+  color: #888888;
+}
+
+.garage-banner__text {
+  flex: 1;
+  min-width: 0;
+}
+
+.garage-banner__text strong {
+  color: #1a1a1a;
+}
+
+.garage-banner__no-match {
+  color: #888888;
+  font-weight: 400;
+}
+
+.garage-banner__btn {
+  background: none;
+  border: 1.5px solid #888888;
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555555;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 150ms ease;
+  flex-shrink: 0;
+}
+
+.garage-banner__btn:hover {
+  border-color: #1a1a1a;
+  color: #1a1a1a;
+}
+
+.garage-banner--match .garage-banner__btn {
+  border-color: #1a7a4a;
+  color: #1a7a4a;
+}
+
+.garage-banner--match .garage-banner__btn:hover {
+  background: #1a7a4a;
+  color: #fff;
+}
+
+.garage-banner--no-match .garage-banner__btn {
+  border-color: #d10000;
+  color: #d10000;
+}
+
+.garage-banner--no-match .garage-banner__btn:hover {
+  background: #d10000;
+  color: #fff;
+}
+
+.garage-banner__btn--ghost {
+  border-color: #d0d0d0;
+  color: #888888;
+  padding: 5px 9px;
+}
+
+.garage-banner__btn--ghost:hover {
+  background: #f0f0f0;
+  color: #1a1a1a;
+  border-color: #aaaaaa;
+}
+
+/* Guest bike form */
+.guest-bike-form {
+  background: #f9f9f9;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guest-bike-form__title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.guest-bike-form__fields {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.guest-bike-form__field {
+  flex: 1;
+  min-width: 140px;
+}
+
+.guest-bike-form__year {
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  background: #ffffff;
+  color: #1a1a1a;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 150ms ease;
+}
+
+.form-input:focus {
+  border-color: #d10000;
+}
+
+.form-input:disabled {
+  opacity: 0.5;
+  background: #f5f5f5;
+}
+
+.guest-bike-form__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.guest-bike-form__hint {
+  font-size: 0.75rem;
+  color: #888888;
+  margin: 0;
+}
+
+.guest-bike-form__login-link {
+  color: #d10000;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Clickable card */
+.product-card {
+  cursor: pointer;
+}

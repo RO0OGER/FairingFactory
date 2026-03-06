@@ -1,19 +1,19 @@
 import { inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { filter, firstValueFrom } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
-export const adminGuard = () => {
+export const adminGuard = async () => {
   const auth = inject(AuthService);
   const router = inject(Router);
 
+  // Wait until Supabase session check is complete
   if (auth.authLoading()) {
-    // Auth hasn't resolved yet – allow through and let AdminPage handle it
-    return true;
+    await firstValueFrom(
+      toObservable(auth.authLoading).pipe(filter((loading) => !loading)),
+    );
   }
 
-  if (auth.isAdmin()) {
-    return true;
-  }
-
-  return router.createUrlTree(['/']);
+  return auth.isAdmin() ? true : router.createUrlTree(['/']);
 };

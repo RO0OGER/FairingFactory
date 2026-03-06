@@ -559,6 +559,88 @@
   line-height: 1;
 }
 
+/* ── Community Tab ────────────────────────────── */
+.community-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.community-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.community-card__img-wrap {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.community-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.community-card__body {
+  padding: 14px 16px 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.community-card__name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.community-card__meta {
+  font-size: 0.82rem;
+  color: #666666;
+  margin: 0;
+}
+
+.community-card__social {
+  font-size: 0.82rem;
+  color: #d10000;
+  font-weight: 600;
+  margin: 0;
+}
+
+.community-card__date {
+  font-size: 0.75rem;
+  color: #aaaaaa;
+  margin: 6px 0 0;
+}
+
+.community-card__actions {
+  padding: 12px 16px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action--approve {
+  flex: 1;
+  background: #e6f9f0;
+  color: #1a7a4a;
+  border-color: #b0e8cc;
+}
+
+.btn-action--approve:hover {
+  background: #c8f0dc;
+  border-color: #1a7a4a;
+}
+
 /* ── Messages Tab ─────────────────────────────── */
 .admin-main--messages {
   display: grid;
@@ -935,6 +1017,79 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* ── Section count badge ──────────────────────── */
+.admin-section__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d10000;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  padding: 0 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* ── Product make/model selectors ─────────────── */
+.product-make-row {
+  display: flex;
+  gap: 8px;
+}
+
+.product-make-group {
+  flex: 1;
+}
+
+.product-model-loading {
+  color: #888;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Year tags ────────────────────────────────── */
+.year-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.year-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff5f5;
+  border: 1.5px solid #f5c0c0;
+  color: #d10000;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.year-tag__remove {
+  background: none;
+  border: none;
+  color: #d10000;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  margin-left: 2px;
+  font-family: inherit;
+}
+
+.year-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 /* ── Responsive ───────────────────────────────── */

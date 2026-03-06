@@ -1,0 +1,115 @@
+<div class="garage-backdrop" (click)="close()"></div>
+
+<div class="garage-modal" role="dialog" aria-modal="true">
+  <div class="garage-modal__header">
+    <h2 class="garage-modal__title">Meine Garage</h2>
+    <button class="garage-modal__close" (click)="close()" aria-label="Schliessen">&times;</button>
+  </div>
+
+  <div class="garage-modal__body">
+    <!-- Existing bikes -->
+    @if (moto.garage().length > 0) {
+      <div class="garage-list">
+        @for (bike of moto.garage(); track bike.id) {
+          <div class="garage-item" [class.garage-item--active]="bike.is_active">
+            <div class="garage-item__info">
+              <span class="garage-item__name">{{ bikeName(bike) }}</span>
+              @if (bike.is_active) {
+                <span class="garage-item__badge">Aktiv</span>
+              }
+            </div>
+            <div class="garage-item__actions">
+              @if (!bike.is_active) {
+                <button class="garage-btn garage-btn--activate" (click)="moto.setActive(bike.id)">
+                  Aktivieren
+                </button>
+              } @else {
+                <button class="garage-btn garage-btn--deactivate" (click)="moto.deactivateAll()">
+                  Deaktivieren
+                </button>
+              }
+              <button class="garage-btn garage-btn--remove" (click)="moto.removeBike(bike.id)">
+                Entfernen
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="garage-empty">Noch kein Motorrad in deiner Garage.</p>
+    }
+
+    <!-- Add bike form -->
+    <div class="garage-add">
+      <h3 class="garage-add__title">Motorrad hinzufügen</h3>
+
+      <div class="garage-form-row">
+        <div class="garage-form-group">
+          <label class="garage-label">Marke</label>
+          @if (makesLoading()) {
+            <div class="garage-hint">Lädt Marken...</div>
+          } @else {
+            <input
+              type="text"
+              list="garage-makes-list"
+              class="garage-input"
+              placeholder="z.B. Kawasaki"
+              [(ngModel)]="selectedMake"
+              (change)="onMakeChange()"
+            />
+            <datalist id="garage-makes-list">
+              @for (make of makes(); track make) {
+                <option [value]="make"></option>
+              }
+            </datalist>
+          }
+        </div>
+
+        <div class="garage-form-group">
+          <label class="garage-label">Modell</label>
+          @if (modelsLoading()) {
+            <div class="garage-hint">Lädt Modelle...</div>
+          } @else {
+            <input
+              type="text"
+              list="garage-models-list"
+              class="garage-input"
+              placeholder="z.B. ZX-6R"
+              [(ngModel)]="selectedModel"
+              [disabled]="!selectedMake || models().length === 0"
+            />
+            <datalist id="garage-models-list">
+              @for (model of models(); track model) {
+                <option [value]="model"></option>
+              }
+            </datalist>
+          }
+        </div>
+
+        <div class="garage-form-group garage-form-group--year">
+          <label class="garage-label">Baujahr</label>
+          <input
+            type="number"
+            class="garage-input"
+            placeholder="z.B. 2010"
+            [(ngModel)]="selectedYear"
+            min="1980"
+            max="2030"
+          />
+        </div>
+      </div>
+
+      <button
+        class="btn btn--primary garage-add__btn"
+        [disabled]="!selectedMake || !selectedModel || saving()"
+        (click)="addBike()"
+      >
+        {{ saving() ? 'Wird gespeichert...' : '+ Hinzufügen' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="garage-modal__footer">
+    <button class="btn btn--cancel" (click)="close()">Schliessen</button>
+  </div>
+</div>

@@ -369,4 +369,8 @@
     bottom: 16px;
     right: 16px;
   }
+
+  .chat-fab--open {
+    display: none;
+  }
 }

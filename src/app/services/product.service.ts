@@ -23,6 +23,10 @@ export class ProductService {
     return this.supabase.client.from('products').select('*').order('sort_order').order('created_at');
   }
 
+  getProductById(id: string) {
+    return this.supabase.client.from('products').select('*').eq('id', id).single();
+  }
+
   createProduct(data: ProductInput) {
     return this.supabase.client.from('products').insert([data]).select().single();
   }
