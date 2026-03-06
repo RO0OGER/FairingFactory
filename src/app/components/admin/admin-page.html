@@ -1,0 +1,329 @@
+<div class="admin">
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="admin-header__brand">
+      <span class="admin-header__indicator"></span>
+      <span>Fairing Factory <strong>Admin</strong></span>
+    </div>
+    <div class="admin-header__tabs">
+      <button
+        class="admin-tab"
+        [class.admin-tab--active]="activeTab() === 'products'"
+        (click)="activeTab.set('products')"
+      >Produkte</button>
+      <button
+        class="admin-tab"
+        [class.admin-tab--active]="activeTab() === 'messages'"
+        (click)="activeTab.set('messages')"
+      >
+        Nachrichten
+        @if (conversations().some(c => c.unread_count > 0)) {
+          <span class="admin-tab__badge"></span>
+        }
+      </button>
+    </div>
+    <div class="admin-header__actions">
+      <span class="admin-header__email">{{ auth.currentUser()?.email }}</span>
+      <a routerLink="/" class="admin-header__btn">Zur Website</a>
+      <button class="admin-header__btn admin-header__btn--danger" (click)="signOut()">
+        Abmelden
+      </button>
+    </div>
+  </header>
+
+  <!-- ── PRODUCTS TAB ── -->
+  @if (activeTab() === 'products') {
+    <main class="admin-main">
+      <div class="admin-section">
+        <div class="admin-section__head">
+          <h1 class="admin-section__title">Produkte</h1>
+          <button class="btn btn--primary" (click)="openNew()">+ Neues Produkt</button>
+        </div>
+
+        @if (loading()) {
+          <div class="admin-state">Lädt Produkte...</div>
+        } @else if (products().length === 0) {
+          <div class="admin-state">
+            <p>Noch keine Produkte vorhanden.</p>
+            <p>Erstelle dein erstes Produkt mit dem Button oben rechts.</p>
+          </div>
+        } @else {
+          <div class="product-table">
+            <div class="product-table__head">
+              <span>Bild</span>
+              <span>Modell</span>
+              <span>Baujahr</span>
+              <span>Preis CHF</span>
+              <span>Verfügbar</span>
+              <span>Aktionen</span>
+            </div>
+
+            @for (product of products(); track product.id) {
+              <div class="product-table__row">
+                <div>
+                  @if (product.image_url) {
+                    <img [src]="product.image_url" [alt]="product.model" class="product-thumb" />
+                  } @else {
+                    <div class="product-thumb product-thumb--empty"></div>
+                  }
+                </div>
+
+                <div>
+                  <p class="product-table__model">{{ product.model }}</p>
+                  @if (product.gallery_images?.length) {
+                    <span class="product-table__meta">+{{ product.gallery_images.length }} Bilder</span>
+                  }
+                </div>
+
+                <div>
+                  <span class="product-table__meta">{{ product.years }}</span>
+                </div>
+
+                <div>
+                  <span class="product-table__price">{{ product.price | number: '1.2-2' }}</span>
+                </div>
+
+                <div>
+                  <span
+                    class="badge"
+                    [class.badge--green]="product.available"
+                    [class.badge--grey]="!product.available"
+                  >
+                    {{ product.available ? 'Ja' : 'Nein' }}
+                  </span>
+                </div>
+
+                <div class="product-table__actions">
+                  @if (deleteConfirmId() === product.id) {
+                    <span class="delete-confirm">Sicher löschen?</span>
+                    <button
+                      class="btn-action btn-action--danger"
+                      (click)="deleteProduct(product.id)"
+                      [disabled]="deleting()"
+                    >Ja</button>
+                    <button class="btn-action" (click)="cancelDelete()">Nein</button>
+                  } @else {
+                    <button class="btn-action btn-action--edit" (click)="openEdit(product)">
+                      Bearbeiten
+                    </button>
+                    <button
+                      class="btn-action btn-action--danger-outline"
+                      (click)="confirmDelete(product.id)"
+                    >Löschen</button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </main>
+  }
+
+  <!-- ── MESSAGES TAB ── -->
+  @if (activeTab() === 'messages') {
+    <main class="admin-main admin-main--messages">
+      <!-- Conversation List -->
+      <aside class="conv-list">
+        <h2 class="conv-list__title">Gespräche</h2>
+        @if (conversations().length === 0) {
+          <p class="conv-list__empty">Noch keine Nachrichten.</p>
+        }
+        @for (conv of conversations(); track conv.id) {
+          <button
+            class="conv-item"
+            [class.conv-item--active]="selectedConv()?.id === conv.id"
+            (click)="openConversation(conv)"
+          >
+            <div class="conv-item__avatar">{{ conv.user_email.charAt(0).toUpperCase() }}</div>
+            <div class="conv-item__body">
+              <div class="conv-item__top">
+                <span class="conv-item__email">{{ conv.user_email }}</span>
+                <span class="conv-item__time">{{ conv.last_message_at | date: 'dd.MM.' }}</span>
+              </div>
+              <div class="conv-item__bottom">
+                <p class="conv-item__preview">{{ conv.last_message }}</p>
+                @if (conv.unread_count > 0) {
+                  <span class="conv-item__badge">{{ conv.unread_count }}</span>
+                }
+              </div>
+            </div>
+          </button>
+        }
+      </aside>
+
+      <!-- Thread -->
+      <section class="conv-thread">
+        @if (!selectedConv()) {
+          <div class="conv-thread__empty">
+            <p>Gespräch auswählen</p>
+          </div>
+        } @else {
+          <div class="conv-thread__header">
+            <div class="conv-thread__header-avatar">{{ selectedUserInitial }}</div>
+            <div class="conv-thread__header-info">
+              <strong class="conv-thread__header-name">{{ selectedConv()!.user_email }}</strong>
+              <span class="conv-thread__header-sub">Kunde</span>
+            </div>
+          </div>
+
+          <div class="conv-thread__messages">
+            @if (messagesLoading()) {
+              <div class="conv-thread__loading">
+                <span class="conv-loading__dot"></span>
+                <span class="conv-loading__dot"></span>
+                <span class="conv-loading__dot"></span>
+              </div>
+            }
+            @for (msg of messages(); track msg.id) {
+              <div class="msg-row" [class.msg-row--admin]="msg.is_from_admin" [class.msg-row--customer]="!msg.is_from_admin">
+                @if (!msg.is_from_admin) {
+                  <div class="msg-avatar">{{ selectedUserInitial }}</div>
+                }
+                <div
+                  class="msg-bubble"
+                  [class.msg-bubble--admin]="msg.is_from_admin"
+                  [class.msg-bubble--customer]="!msg.is_from_admin"
+                >
+                  <p class="msg-bubble__text">{{ msg.content }}</p>
+                  <span class="msg-bubble__time">{{ msg.created_at | date: 'HH:mm' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="conv-thread__reply">
+            <textarea
+              class="reply-input"
+              placeholder="Nachricht schreiben..."
+              [value]="replyText()"
+              (input)="replyText.set($any($event.target).value)"
+              (keydown)="onReplyKeydown($event)"
+              rows="1"
+            ></textarea>
+            <button
+              class="reply-send-btn"
+              (click)="sendReply()"
+              [disabled]="sendingReply() || !replyText().trim()"
+              aria-label="Senden"
+            >
+              @if (sendingReply()) {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                </svg>
+              } @else {
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+              }
+            </button>
+          </div>
+        }
+      </section>
+    </main>
+  }
+
+  <!-- Form Drawer -->
+  @if (showForm()) {
+    <div class="form-backdrop" (click)="closeForm()"></div>
+
+    <aside class="form-drawer">
+      <div class="form-drawer__header">
+        <h2 class="form-drawer__title">
+          {{ editingId() ? 'Produkt bearbeiten' : 'Neues Produkt' }}
+        </h2>
+        <button class="form-drawer__close" (click)="closeForm()" aria-label="Schliessen">
+          &times;
+        </button>
+      </div>
+
+      <div class="form-drawer__body">
+        <form [formGroup]="form" (ngSubmit)="save()" class="product-form" novalidate>
+          <!-- Modell -->
+          <div class="form-group" [class.form-group--error]="isInvalid('model')">
+            <label class="form-label">Modell *</label>
+            <input type="text" formControlName="model" class="form-input" placeholder="z.B. Kawasaki ZX-6R" />
+            @if (isInvalid('model')) {
+              <span class="form-error">Pflichtfeld</span>
+            }
+          </div>
+
+          <!-- Baujahr -->
+          <div class="form-group" [class.form-group--error]="isInvalid('years')">
+            <label class="form-label">Baujahr *</label>
+            <input type="text" formControlName="years" class="form-input" placeholder="z.B. 2003–2016" />
+            @if (isInvalid('years')) {
+              <span class="form-error">Pflichtfeld</span>
+            }
+          </div>
+
+          <!-- Preis -->
+          <div class="form-group" [class.form-group--error]="isInvalid('price')">
+            <label class="form-label">Preis (CHF) *</label>
+            <input type="number" formControlName="price" class="form-input" placeholder="489" min="0" step="1" />
+            @if (isInvalid('price')) {
+              <span class="form-error">Pflichtfeld, muss ≥ 0 sein</span>
+            }
+          </div>
+
+          <!-- Beschreibung -->
+          <div class="form-group">
+            <label class="form-label">Beschreibung</label>
+            <textarea formControlName="description" class="form-input form-textarea" rows="3" placeholder="Kurze Beschreibung des Fairing-Kits..."></textarea>
+          </div>
+
+          <!-- Thumbnail -->
+          <div class="form-group">
+            <label class="form-label">Titelbild (Thumbnail)</label>
+            @if (previewUrl || currentImageUrl) {
+              <img [src]="previewUrl || currentImageUrl" alt="Vorschau" class="image-preview" />
+            }
+            <label class="file-upload-btn">
+              <input type="file" accept="image/*" class="file-input" (change)="onFileSelected($event)" />
+              {{ previewUrl || currentImageUrl ? 'Bild ersetzen' : 'Bild hochladen' }}
+            </label>
+            <span class="form-hint">JPG, PNG oder WebP, max. 5 MB</span>
+          </div>
+
+          <!-- Galerie -->
+          <div class="form-group">
+            <label class="form-label">Galerie (bis zu 4 Bilder)</label>
+            <div class="gallery-grid">
+              @for (i of [0, 1, 2, 3]; track i) {
+                <div class="gallery-slot">
+                  @if (galleryPreviewAt(i)) {
+                    <img [src]="galleryPreviewAt(i)!" alt="Galerie {{ i + 1 }}" class="gallery-slot__img" />
+                    <button type="button" class="gallery-slot__remove" (click)="removeGalleryImage(i)" aria-label="Entfernen">&times;</button>
+                  } @else {
+                    <label class="gallery-slot__upload">
+                      <input type="file" accept="image/*" class="file-input" (change)="onGalleryFileSelected($event, i)" />
+                      <span class="gallery-slot__plus">+</span>
+                    </label>
+                  }
+                </div>
+              }
+            </div>
+            <span class="form-hint">JPG, PNG oder WebP, max. 5 MB pro Bild</span>
+          </div>
+
+          <!-- Verfügbar -->
+          <label class="form-checkbox">
+            <input type="checkbox" formControlName="available" />
+            <span>Produkt ist verfügbar (im Shop sichtbar)</span>
+          </label>
+
+          @if (formError()) {
+            <p class="form-error-global">{{ formError() }}</p>
+          }
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn--primary" [disabled]="saving()">
+              {{ saving() ? 'Wird gespeichert...' : (editingId() ? 'Speichern' : 'Erstellen') }}
+            </button>
+            <button type="button" class="btn btn--cancel" (click)="closeForm()">Abbrechen</button>
+          </div>
+        </form>
+      </div>
+    </aside>
+  }
+</div>

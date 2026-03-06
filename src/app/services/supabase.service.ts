@@ -23,7 +23,7 @@ export interface Feedback {
 
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
-  private readonly client: SupabaseClient = createClient(
+  readonly client: SupabaseClient = createClient(
     environment.supabase.url,
     environment.supabase.anonKey,
   );

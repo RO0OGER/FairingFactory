@@ -1,0 +1,131 @@
+<div class="modal-backdrop" (click)="close()"></div>
+
+<div class="modal" role="dialog" aria-modal="true">
+  <button class="modal__close" (click)="close()" aria-label="Schliessen">&times;</button>
+
+  <div class="modal__tabs">
+    <button
+      class="modal__tab"
+      [class.modal__tab--active]="activeTab() === 'login'"
+      (click)="setTab('login')"
+    >
+      Anmelden
+    </button>
+    <button
+      class="modal__tab"
+      [class.modal__tab--active]="activeTab() === 'register'"
+      (click)="setTab('register')"
+    >
+      Registrieren
+    </button>
+  </div>
+
+  @if (activeTab() === 'login') {
+    <div class="modal__body">
+      <h2 class="modal__title">Willkommen zurück</h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form" novalidate>
+        <div class="form-group" [class.form-group--error]="isLoginInvalid('email')">
+          <label for="login-email" class="form-label">E-Mail</label>
+          <input
+            id="login-email"
+            type="email"
+            formControlName="email"
+            class="form-input"
+            placeholder="deine@email.ch"
+            autocomplete="email"
+          />
+          @if (isLoginInvalid('email')) {
+            <span class="form-error">Bitte gib eine gültige E-Mail-Adresse ein.</span>
+          }
+        </div>
+
+        <div class="form-group" [class.form-group--error]="isLoginInvalid('password')">
+          <label for="login-password" class="form-label">Passwort</label>
+          <input
+            id="login-password"
+            type="password"
+            formControlName="password"
+            class="form-input"
+            placeholder="Mindestens 6 Zeichen"
+            autocomplete="current-password"
+          />
+          @if (isLoginInvalid('password')) {
+            <span class="form-error">Bitte gib dein Passwort ein.</span>
+          }
+        </div>
+
+        @if (error()) {
+          <p class="form-error-global">{{ error() }}</p>
+        }
+
+        <button type="submit" class="btn btn--primary btn--full" [disabled]="loading()">
+          {{ loading() ? 'Lädt...' : 'Anmelden' }}
+        </button>
+      </form>
+
+      <p class="modal__switch">
+        Noch kein Konto?
+        <button class="modal__switch-btn" (click)="setTab('register')">Registrieren</button>
+      </p>
+    </div>
+  }
+
+  @if (activeTab() === 'register') {
+    <div class="modal__body">
+      <h2 class="modal__title">Konto erstellen</h2>
+
+      @if (registerSuccess()) {
+        <div class="register-success">
+          <p>Registrierung erfolgreich!</p>
+          <p>Bitte bestätige deine E-Mail-Adresse, um dich anzumelden.</p>
+        </div>
+      } @else {
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()" class="auth-form" novalidate>
+          <div class="form-group" [class.form-group--error]="isRegisterInvalid('email')">
+            <label for="reg-email" class="form-label">E-Mail</label>
+            <input
+              id="reg-email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              placeholder="deine@email.ch"
+              autocomplete="email"
+            />
+            @if (isRegisterInvalid('email')) {
+              <span class="form-error">Bitte gib eine gültige E-Mail-Adresse ein.</span>
+            }
+          </div>
+
+          <div class="form-group" [class.form-group--error]="isRegisterInvalid('password')">
+            <label for="reg-password" class="form-label">Passwort</label>
+            <input
+              id="reg-password"
+              type="password"
+              formControlName="password"
+              class="form-input"
+              placeholder="Mindestens 6 Zeichen"
+              autocomplete="new-password"
+            />
+            @if (isRegisterInvalid('password')) {
+              <span class="form-error">Mindestens 6 Zeichen erforderlich.</span>
+            }
+          </div>
+
+          @if (error()) {
+            <p class="form-error-global">{{ error() }}</p>
+          }
+
+          <button type="submit" class="btn btn--primary btn--full" [disabled]="loading()">
+            {{ loading() ? 'Lädt...' : 'Konto erstellen' }}
+          </button>
+        </form>
+
+        <p class="modal__switch">
+          Bereits ein Konto?
+          <button class="modal__switch-btn" (click)="setTab('login')">Anmelden</button>
+        </p>
+      }
+    </div>
+  }
+</div>

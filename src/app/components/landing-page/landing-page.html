@@ -1,0 +1,63 @@
+<nav class="nav">
+  <div class="nav__container">
+    <a href="#" class="nav__brand">Fairing Factory</a>
+
+    <ul class="nav__links">
+      <li><a href="#prozess" class="nav__link">So funktioniert's</a></li>
+      <li><a href="#produkte" class="nav__link">Produkte</a></li>
+    </ul>
+
+    <div class="nav__actions">
+      <button
+        class="nav__cart-btn"
+        (click)="cart.showCartDrawer.set(true)"
+        aria-label="Warenkorb öffnen"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        @if (cart.itemCount > 0) {
+          <span class="nav__cart-badge">{{ cart.itemCount }}</span>
+        }
+      </button>
+
+      @if (auth.currentUser()) {
+        @if (auth.isAdmin()) {
+          <a routerLink="/admin" class="nav__btn nav__btn--admin">Admin</a>
+        }
+        <span class="nav__user-email">{{ auth.currentUser()!.email }}</span>
+        <button class="nav__btn nav__btn--ghost" (click)="signOut()">Abmelden</button>
+      } @else {
+        <button class="nav__btn nav__btn--primary" (click)="auth.showAuthModal.set(true)">
+          Anmelden
+        </button>
+      }
+    </div>
+  </div>
+</nav>
+
+<main>
+  <app-hero />
+  <app-how-it-works />
+  <app-products />
+</main>
+
+<footer class="footer">
+  <div class="footer__container">
+    <p class="footer__copy">&copy; {{ currentYear }} Fairing Factory. Alle Rechte vorbehalten.</p>
+    <p class="footer__tagline">Geprüfte Fairings. Klar geliefert. – Schweiz</p>
+    <a routerLink="/impressum" class="footer__impressum">Impressum</a>
+  </div>
+</footer>
+
+@if (auth.showAuthModal()) {
+  <app-auth-modal />
+}
+
+@if (cart.showCartDrawer()) {
+  <app-cart-drawer />
+}
+
+<app-chat-widget />

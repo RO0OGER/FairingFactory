@@ -1,0 +1,120 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1a1a1a;
+  padding: 0 20px;
+}
+
+.nav__container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  height: 60px;
+}
+
+.nav__brand {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.impressum {
+  min-height: calc(100vh - 120px);
+  background: #f5f5f5;
+  padding: 48px 20px;
+}
+
+.impressum__container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.impressum__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #888888;
+  font-size: 0.875rem;
+  text-decoration: none;
+  margin-bottom: 32px;
+  transition: color 150ms ease;
+}
+
+.impressum__back:hover {
+  color: #1a1a1a;
+}
+
+.impressum__title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0 0 36px;
+  letter-spacing: -0.03em;
+}
+
+.impressum__section {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  border: 1px solid #e8e8e8;
+}
+
+.impressum__section p {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #333333;
+  line-height: 1.6;
+}
+
+.impressum__section p:last-child {
+  margin: 0;
+}
+
+.impressum__subtitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin: 0 0 14px;
+}
+
+.impressum__label {
+  display: inline-block;
+  width: 70px;
+  color: #888888;
+  font-size: 0.875rem;
+}
+
+.impressum__link {
+  color: #d10000;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: opacity 150ms ease;
+}
+
+.impressum__link:hover {
+  opacity: 0.75;
+}
+
+.footer {
+  background: #1a1a1a;
+  padding: 24px 20px;
+}
+
+.footer__container {
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer__copy {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+  margin: 0;
+}

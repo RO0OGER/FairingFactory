@@ -1,0 +1,185 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #1a1a1a;
+  padding: 0 20px;
+}
+
+.nav__container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.nav__brand {
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.nav__links {
+  display: flex;
+  list-style: none;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav__link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 200ms ease;
+}
+
+.nav__link:hover {
+  color: #ffffff;
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav__cart-btn {
+  position: relative;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 200ms ease;
+}
+
+.nav__cart-btn:hover {
+  color: #ffffff;
+}
+
+.nav__cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: #d10000;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+.nav__user-email {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav__btn {
+  padding: 7px 18px;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+.nav__btn--primary {
+  background: #d10000;
+  color: #ffffff;
+  border-color: #d10000;
+}
+
+.nav__btn--primary:hover {
+  background: #a00000;
+  border-color: #a00000;
+}
+
+.nav__btn--ghost {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav__btn--ghost:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.nav__btn--admin {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.2);
+  font-size: 0.8rem;
+}
+
+.nav__btn--admin:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+.footer {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 32px 20px;
+  text-align: center;
+}
+
+.footer__container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.footer__copy {
+  font-size: 0.9rem;
+}
+
+.footer__tagline {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.footer__impressum {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.footer__impressum:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 640px) {
+  .nav__links {
+    display: none;
+  }
+
+  .nav__user-email {
+    display: none;
+  }
+}
