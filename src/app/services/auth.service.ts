@@ -9,7 +9,10 @@ export class AuthService {
   readonly currentUser = signal<User | null>(null);
   readonly authLoading = signal(true);
   readonly showAuthModal = signal(false);
-  readonly isAdmin = computed(() => this.currentUser()?.user_metadata?.['is_admin'] === true);
+  readonly isAdmin = computed(() =>
+    this.currentUser()?.user_metadata?.['is_admin'] === true ||
+    this.currentUser()?.app_metadata?.['role'] === 'admin'
+  );
 
   constructor() {
     this.supabase.client.auth.getSession().then(({ data: { session } }) => {
