@@ -1,0 +1,125 @@
+.contact {
+  padding: 80px 20px;
+  background: #f7f7f7;
+}
+
+.contact__container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.contact__form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.form-input {
+  padding: 10px 14px;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 150ms ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: #d10000;
+}
+
+.form-select {
+  cursor: pointer;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-group--error .form-input {
+  border-color: #d10000;
+}
+
+.form-error {
+  font-size: 0.8rem;
+  color: #d10000;
+}
+
+.form-error-global {
+  font-size: 0.875rem;
+  color: #d10000;
+  text-align: center;
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.875rem;
+  color: #555555;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.form-checkbox input[type='checkbox'] {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #d10000;
+}
+
+.btn--submit {
+  align-self: flex-start;
+  min-width: 160px;
+}
+
+.btn--submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.form-success {
+  text-align: center;
+  padding: 48px 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e5e5;
+}
+
+.form-success h3 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.form-success p {
+  color: #555555;
+}
+
+@media (max-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

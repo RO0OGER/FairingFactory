@@ -1,0 +1,108 @@
+<section class="contact" id="kontakt">
+  <div class="contact__container">
+    <div class="section-header">
+      <h2 class="section-title">Vorbestellen / Kontakt</h2>
+      <p class="section-subtitle">
+        Hinterlasse deine Angaben – wir melden uns, sobald dein Fairing-Kit verfügbar ist.
+      </p>
+    </div>
+
+    @if (success()) {
+      <div class="form-success">
+        <h3>Vielen Dank!</h3>
+        <p>Deine Anfrage ist eingegangen. Wir melden uns in Kürze bei dir.</p>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="contact__form" novalidate>
+        <div class="form-row">
+          <div class="form-group" [class.form-group--error]="isInvalid('name')">
+            <label for="name" class="form-label">Name *</label>
+            <input
+              id="name"
+              type="text"
+              formControlName="name"
+              class="form-input"
+              placeholder="Dein Name"
+              autocomplete="name"
+            />
+            @if (isInvalid('name')) {
+              <span class="form-error">Bitte gib deinen Namen ein.</span>
+            }
+          </div>
+          <div class="form-group" [class.form-group--error]="isInvalid('email')">
+            <label for="email" class="form-label">E-Mail *</label>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="form-input"
+              placeholder="deine@email.ch"
+              autocomplete="email"
+            />
+            @if (isInvalid('email')) {
+              <span class="form-error">Bitte gib eine gültige E-Mail-Adresse ein.</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone" class="form-label">Telefon</label>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              class="form-input"
+              placeholder="+41 79 000 00 00"
+              autocomplete="tel"
+            />
+          </div>
+          <div class="form-group">
+            <label for="bike_model" class="form-label">Motorradmodell</label>
+            <select id="bike_model" formControlName="bike_model" class="form-input form-select">
+              <option value="">– Modell wählen –</option>
+              @for (model of bikeModels; track model) {
+                <option [value]="model">{{ model }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="fairing_interest" class="form-label">Gewünschte Lackierung / Design</label>
+          <input
+            id="fairing_interest"
+            type="text"
+            formControlName="fairing_interest"
+            class="form-input"
+            placeholder="z.B. Original Rot/Weiss, Custom, Individuell"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="message" class="form-label">Nachricht / Fragen</label>
+          <textarea
+            id="message"
+            formControlName="message"
+            class="form-input form-textarea"
+            rows="4"
+            placeholder="Deine Fragen, Anmerkungen oder spezielle Wünsche..."
+          ></textarea>
+        </div>
+
+        <label class="form-checkbox">
+          <input type="checkbox" formControlName="newsletter" />
+          <span>Ja, ich möchte den Newsletter erhalten und über Neuigkeiten informiert werden.</span>
+        </label>
+
+        @if (error()) {
+          <p class="form-error-global">{{ error() }}</p>
+        }
+
+        <button type="submit" class="btn btn--primary btn--submit" [disabled]="loading()">
+          {{ loading() ? 'Wird gesendet...' : 'Anfrage senden' }}
+        </button>
+      </form>
+    }
+  </div>
+</section>

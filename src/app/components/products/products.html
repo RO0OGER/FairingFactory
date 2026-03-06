@@ -1,0 +1,70 @@
+<section class="products" id="produkte">
+  <div class="products__container">
+    <div class="section-header">
+      <h2 class="section-title">Fairing-Kits</h2>
+      <p class="section-subtitle">
+        Alle Kits werden vor der Lieferung in der Schweiz qualitätsgeprüft. Preise inkl. Zoll und
+        Versand.
+      </p>
+    </div>
+
+    @if (loadingProducts()) {
+      <div class="products__loading">
+        <span>Lädt...</span>
+      </div>
+    } @else if (products().length === 0) {
+      <p class="products__empty">Keine Produkte verfügbar. Bitte später erneut versuchen.</p>
+    } @else {
+      <div class="products__grid">
+        @for (product of products(); track product.id) {
+          <div class="product-card" [class.product-card--unavailable]="!product.available">
+            @if (product.image_url) {
+              <img
+                [src]="product.image_url"
+                [alt]="product.model"
+                class="product-card__image"
+              />
+            } @else {
+              <div class="product-card__image-placeholder"></div>
+            }
+            <div class="product-card__body">
+              <h3 class="product-card__model">{{ product.model }}</h3>
+              <p class="product-card__years">Baujahr {{ product.years }}</p>
+              <p class="product-card__desc">{{ product.description }}</p>
+            </div>
+            <div class="product-card__footer">
+              <div class="product-card__price">
+                <span class="product-card__price-label">ab CHF</span>
+                <span class="product-card__price-amount">{{ product.price }}</span>
+              </div>
+              @if (product.available) {
+                <button
+                  class="btn btn--outline btn--sm"
+                  [class.btn--in-cart]="cart.isInCart(product.model)"
+                  [disabled]="loadingModel() === product.model"
+                  (click)="onCartClick(product)"
+                >
+                  @if (loadingModel() === product.model) {
+                    Lädt...
+                  } @else if (cart.isInCart(product.model)) {
+                    Im Warenkorb
+                  } @else if (auth.currentUser()) {
+                    In den Warenkorb
+                  } @else {
+                    Anmelden &amp; kaufen
+                  }
+                </button>
+              } @else {
+                <span class="product-card__badge-soon">Demnächst</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <p class="products__note">
+      * Weitere Modelle auf Anfrage. Alle Preise in CHF inkl. MwSt., Zoll und Versand.
+    </p>
+  </div>
+</section>

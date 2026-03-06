@@ -1,1 +1,103 @@
-/* You can add global styles to this file, and also import other style files */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  color: #1a1a1a;
+  background: #ffffff;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+section {
+  scroll-margin-top: 60px;
+}
+
+/* Global button styles */
+.btn {
+  display: inline-block;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition:
+    background 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease;
+  line-height: 1;
+  font-family: inherit;
+}
+
+.btn--primary {
+  background: #d10000;
+  color: #ffffff;
+  border-color: #d10000;
+}
+
+.btn--primary:hover {
+  background: #a00000;
+  border-color: #a00000;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.btn--outline {
+  background: transparent;
+  color: #d10000;
+  border-color: #d10000;
+}
+
+.btn--outline:hover {
+  background: #d10000;
+  color: #ffffff;
+}
+
+/* Shared section layout */
+.section-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: #666666;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
