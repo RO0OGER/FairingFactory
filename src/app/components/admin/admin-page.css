@@ -1092,6 +1092,84 @@
   align-items: center;
 }
 
+/* ── User Table ───────────────────────────────── */
+.user-table {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+}
+
+.user-table__head {
+  display: grid;
+  grid-template-columns: 1fr 120px 160px 100px 260px;
+  gap: 12px;
+  padding: 12px 20px;
+  background: #f7f7f7;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.user-table__row {
+  display: grid;
+  grid-template-columns: 1fr 120px 160px 100px 260px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 150ms ease;
+}
+
+.user-table__row:last-child {
+  border-bottom: none;
+}
+
+.user-table__row:hover {
+  background: #fafafa;
+}
+
+.user-table__email {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-table__meta {
+  font-size: 0.82rem;
+  color: #666666;
+}
+
+.user-table__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.user-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.user-badge--self {
+  background: #eef0ff;
+  color: #4455cc;
+}
+
 /* ── Responsive ───────────────────────────────── */
 @media (max-width: 900px) {
   .product-table__head,

@@ -8,6 +8,7 @@ import { ChatService, Conversation, Message } from '../../services/chat.service'
 import { CommunityPhoto, CommunityService } from '../../services/community.service';
 import { MotorcycleService } from '../../services/motorcycle.service';
 import { Product, ProductInput, ProductService } from '../../services/product.service';
+import { AdminUser, UserManagementService } from '../../services/user-management.service';
 
 const GALLERY_SIZE = 4;
 
@@ -27,7 +28,7 @@ export class AdminPage implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
 
   // ── Tab navigation ──────────────────────────────
-  readonly activeTab = signal<'products' | 'messages' | 'community'>('products');
+  readonly activeTab = signal<'products' | 'messages' | 'community' | 'users'>('products');
 
   // ── Products ────────────────────────────────────
   readonly products = signal<Product[]>([]);
@@ -110,6 +111,14 @@ export class AdminPage implements OnInit, OnDestroy {
   private convChannel: RealtimeChannel | null = null;
 
   readonly adminMakes = signal<string[]>([]);
+
+  // ── Users ────────────────────────────────────────
+  private userService = inject(UserManagementService);
+  readonly users = signal<AdminUser[]>([]);
+  readonly usersLoading = signal(false);
+  readonly deleteUserConfirmId = signal<string | null>(null);
+  readonly deletingUser = signal(false);
+  readonly togglingAdminId = signal<string | null>(null);
 
   async ngOnInit() {
     if (!this.auth.authLoading() && !this.auth.isAdmin()) {
@@ -421,6 +430,38 @@ export class AdminPage implements OnInit, OnDestroy {
       event.preventDefault();
       this.sendReply();
     }
+  }
+
+  async loadUsers() {
+    this.usersLoading.set(true);
+    const data = await this.userService.getUsers();
+    this.users.set(data);
+    this.usersLoading.set(false);
+  }
+
+  confirmDeleteUser(id: string) {
+    this.deleteUserConfirmId.set(id);
+  }
+
+  cancelDeleteUser() {
+    this.deleteUserConfirmId.set(null);
+  }
+
+  async deleteUser(id: string) {
+    this.deletingUser.set(true);
+    const ok = await this.userService.deleteUser(id);
+    if (ok) this.users.update((list) => list.filter((u) => u.id !== id));
+    this.deleteUserConfirmId.set(null);
+    this.deletingUser.set(false);
+  }
+
+  async toggleAdmin(user: AdminUser) {
+    this.togglingAdminId.set(user.id);
+    const ok = await this.userService.setAdminRole(user.id, !user.is_admin);
+    if (ok) this.users.update((list) =>
+      list.map((u) => u.id === user.id ? { ...u, is_admin: !u.is_admin } : u)
+    );
+    this.togglingAdminId.set(null);
   }
 
   async signOut() {
