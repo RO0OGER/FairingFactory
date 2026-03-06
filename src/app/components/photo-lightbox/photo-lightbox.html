@@ -1,0 +1,40 @@
+<div class="lightbox-backdrop" (click)="closeEvent.emit()"></div>
+
+<div class="lightbox" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+  <button class="lightbox__close" (click)="closeEvent.emit()" aria-label="Schliessen">&times;</button>
+
+  <div class="lightbox__layout">
+    <!-- Photo -->
+    <div class="lightbox__img-wrap">
+      <img [src]="photo.photo_url" [alt]="photo.user_name" class="lightbox__img" />
+    </div>
+
+    <!-- Sidebar (Instagram-style) -->
+    <div class="lightbox__sidebar">
+      <div class="lightbox__header">
+        <div class="lightbox__avatar">{{ photo.user_name.charAt(0).toUpperCase() }}</div>
+        <div class="lightbox__header-info">
+          <p class="lightbox__username">{{ photo.user_name }}</p>
+          @if (photo.bike_model) {
+            <p class="lightbox__bike">{{ photo.bike_model }}</p>
+          }
+        </div>
+      </div>
+
+      @if (photo.social_media_tag) {
+        <div class="lightbox__body">
+          <p class="lightbox__social">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+            &#64;{{ photo.social_media_tag }}
+          </p>
+        </div>
+      }
+
+      <div class="lightbox__footer">
+        <p class="lightbox__badge">Fairing Factory Community</p>
+      </div>
+    </div>
+  </div>
+</div>

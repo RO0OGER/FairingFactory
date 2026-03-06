@@ -2,21 +2,19 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthModal } from '../auth-modal/auth-modal';
 import { CartDrawer } from '../cart-drawer/cart-drawer';
-import { ChatWidget } from '../chat-widget/chat-widget';
 import { GarageModal } from '../garage-modal/garage-modal';
-import { Hero } from '../hero/hero';
-import { HowItWorks } from '../how-it-works/how-it-works';
+import { Products } from '../products/products';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { MotorcycleService } from '../../services/motorcycle.service';
 
 @Component({
-  selector: 'app-landing-page',
-  imports: [Hero, HowItWorks, AuthModal, CartDrawer, ChatWidget, GarageModal, RouterLink],
-  templateUrl: './landing-page.html',
-  styleUrl: './landing-page.css',
+  selector: 'app-products-page',
+  imports: [Products, AuthModal, CartDrawer, GarageModal, RouterLink],
+  templateUrl: './products-page.html',
+  styleUrl: './products-page.css',
 })
-export class LandingPage {
+export class ProductsPage {
   protected auth = inject(AuthService);
   protected cart = inject(CartService);
   protected moto = inject(MotorcycleService);

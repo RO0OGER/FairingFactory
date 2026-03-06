@@ -3,8 +3,8 @@
     <a routerLink="/" class="nav__brand">Fairing Factory</a>
 
     <ul class="nav__links">
-      <li><a href="#prozess" class="nav__link">So funktioniert's</a></li>
-      <li><a routerLink="/products" class="nav__link">Produkte</a></li>
+      <li><a routerLink="/" class="nav__link">Startseite</a></li>
+      <li><a routerLink="/products" class="nav__link nav__link--active">Produkte</a></li>
       <li><a routerLink="/community" class="nav__link">Community</a></li>
     </ul>
 
@@ -53,8 +53,7 @@
 </nav>
 
 <main>
-  <app-hero />
-  <app-how-it-works />
+  <app-products />
 </main>
 
 <footer class="footer">
@@ -76,5 +75,3 @@
 @if (moto.showGarageModal()) {
   <app-garage-modal />
 }
-
-<app-chat-widget />

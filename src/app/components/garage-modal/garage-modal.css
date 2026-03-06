@@ -1,0 +1,264 @@
+.garage-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+}
+
+.garage-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 301;
+  background: #ffffff;
+  border-radius: 16px;
+  width: min(560px, calc(100vw - 32px));
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.garage-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #e5e5e5;
+  flex-shrink: 0;
+}
+
+.garage-modal__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.garage-modal__close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #888;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.garage-modal__close:hover {
+  color: #1a1a1a;
+}
+
+.garage-modal__body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.garage-modal__footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+/* Garage list */
+.garage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.garage-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid #e5e5e5;
+  border-radius: 10px;
+  transition: border-color 150ms ease;
+}
+
+.garage-item--active {
+  border-color: #d10000;
+  background: #fff5f5;
+}
+
+.garage-item__info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.garage-item__name {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.garage-item__badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #d10000;
+  background: #ffe5e5;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.garage-item__actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.garage-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  font-family: inherit;
+  transition: all 150ms ease;
+}
+
+.garage-btn--activate {
+  background: #1a1a1a;
+  color: #fff;
+  border-color: #1a1a1a;
+}
+
+.garage-btn--activate:hover {
+  background: #333;
+}
+
+.garage-btn--deactivate {
+  background: none;
+  color: #666;
+  border-color: #ccc;
+}
+
+.garage-btn--deactivate:hover {
+  border-color: #999;
+  color: #333;
+}
+
+.garage-btn--remove {
+  background: none;
+  color: #d10000;
+  border-color: #f5c0c0;
+}
+
+.garage-btn--remove:hover {
+  background: #fff0f0;
+}
+
+.garage-empty {
+  text-align: center;
+  color: #888;
+  font-size: 0.9rem;
+  padding: 8px 0;
+}
+
+/* Add form */
+.garage-add {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.garage-add__title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.garage-form-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.garage-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 130px;
+}
+
+.garage-form-group--year {
+  flex: 0 0 100px;
+  min-width: 80px;
+}
+
+.garage-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.garage-input {
+  padding: 8px 10px;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  background: #fff;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 150ms ease;
+  width: 100%;
+}
+
+.garage-input:focus {
+  border-color: #d10000;
+}
+
+.garage-input:disabled {
+  background: #f0f0f0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.garage-hint {
+  font-size: 0.8rem;
+  color: #888;
+  padding: 8px 10px;
+}
+
+.garage-add__btn {
+  align-self: flex-start;
+}
+
+@media (max-width: 480px) {
+  .garage-form-row {
+    flex-direction: column;
+  }
+
+  .garage-form-group--year {
+    flex: 1;
+  }
+
+  .garage-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

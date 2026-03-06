@@ -1,0 +1,169 @@
+<nav class="nav">
+  <div class="nav__container">
+    <a routerLink="/" class="nav__brand">Fairing Factory</a>
+
+    <ul class="nav__links">
+      <li><a routerLink="/" class="nav__link">Startseite</a></li>
+      <li><a routerLink="/products" class="nav__link nav__link--active">Produkte</a></li>
+      <li><a routerLink="/community" class="nav__link">Community</a></li>
+    </ul>
+
+    <div class="nav__actions">
+      @if (auth.currentUser()) {
+        <button
+          class="nav__garage-btn"
+          (click)="moto.showGarageModal.set(true)"
+          aria-label="Garage verwalten"
+          title="Meine Garage"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+          </svg>
+        </button>
+      }
+
+      <button class="nav__cart-btn" (click)="cart.showCartDrawer.set(true)" aria-label="Warenkorb">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        @if (cart.itemCount > 0) {
+          <span class="nav__cart-badge">{{ cart.itemCount }}</span>
+        }
+      </button>
+
+      @if (auth.currentUser()) {
+        @if (auth.isAdmin()) {
+          <a routerLink="/admin" class="nav__btn nav__btn--admin">Admin</a>
+        }
+        <span class="nav__user-email">{{ auth.currentUser()!.email }}</span>
+        <button class="nav__btn nav__btn--ghost" (click)="signOut()">Abmelden</button>
+      } @else {
+        <button class="nav__btn nav__btn--primary" (click)="auth.showAuthModal.set(true)">
+          Anmelden
+        </button>
+      }
+    </div>
+  </div>
+</nav>
+
+@if (loading()) {
+  <div class="pd-loading">Lädt...</div>
+} @else if (product()) {
+  <div class="pd">
+    <div class="pd-breadcrumb">
+      <a routerLink="/products" class="pd-back">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+        Alle Produkte
+      </a>
+    </div>
+
+    <div class="pd-layout">
+      <!-- Gallery -->
+      <div class="pd-gallery">
+        <div class="pd-gallery__main">
+          @if (allImages().length > 0) {
+            <img [src]="allImages()[activeGalleryIndex()]" [alt]="product()!.model" class="pd-gallery__img" />
+          } @else {
+            <div class="pd-gallery__placeholder"></div>
+          }
+        </div>
+        @if (allImages().length > 1) {
+          <div class="pd-gallery__thumbs">
+            @for (img of allImages(); track img; let i = $index) {
+              <button
+                class="pd-gallery__thumb"
+                [class.pd-gallery__thumb--active]="activeGalleryIndex() === i"
+                (click)="activeGalleryIndex.set(i)"
+              >
+                <img [src]="img" [alt]="'Bild ' + (i + 1)" />
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Info -->
+      <div class="pd-info">
+        <h1 class="pd-info__model">{{ product()!.model }}</h1>
+        <p class="pd-info__years">Baujahr {{ product()!.years }}</p>
+
+        @if (product()!.description) {
+          <p class="pd-info__desc">{{ product()!.description }}</p>
+        }
+
+        <div class="pd-price">
+          <span class="pd-price__label">Preis inkl. MwSt., Zoll & Versand</span>
+          <span class="pd-price__amount">CHF {{ product()!.price | number: '1.2-2' }}</span>
+        </div>
+
+        @if (product()!.available) {
+          <button
+            class="btn btn--primary pd-cart-btn"
+            [class.pd-cart-btn--in-cart]="cart.isInCart(product()!.model)"
+            [disabled]="addingToCart()"
+            (click)="onCartClick()"
+          >
+            @if (addingToCart()) {
+              Wird hinzugefügt...
+            } @else if (cart.isInCart(product()!.model)) {
+              Im Warenkorb
+            } @else if (auth.currentUser()) {
+              In den Warenkorb
+            } @else {
+              Anmelden &amp; kaufen
+            }
+          </button>
+        } @else {
+          <div class="pd-unavailable">Dieses Produkt ist momentan nicht verfügbar.</div>
+        }
+      </div>
+    </div>
+
+    <!-- Community section -->
+    @if (communityPhotos().length > 0) {
+      <div class="pd-community">
+        <h2 class="pd-community__title">Motorräder aus der Community</h2>
+        <div class="pd-community__grid">
+          @for (photo of communityPhotos(); track photo.id) {
+            <button class="pd-community__card" (click)="selectedPhoto.set(photo)">
+              <img [src]="photo.photo_url" [alt]="photo.user_name" class="pd-community__img" loading="lazy" />
+              <div class="pd-community__overlay">
+                <p class="pd-community__name">{{ photo.user_name }}</p>
+                @if (photo.bike_model) {
+                  <p class="pd-community__bike">{{ photo.bike_model }}</p>
+                }
+              </div>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<footer class="footer">
+  <div class="footer__container">
+    <p class="footer__copy">&copy; {{ currentYear }} Fairing Factory. Alle Rechte vorbehalten.</p>
+    <a routerLink="/impressum" class="footer__impressum">Impressum</a>
+  </div>
+</footer>
+
+@if (auth.showAuthModal()) {
+  <app-auth-modal />
+}
+
+@if (cart.showCartDrawer()) {
+  <app-cart-drawer />
+}
+
+@if (moto.showGarageModal()) {
+  <app-garage-modal />
+}
+
+@if (selectedPhoto()) {
+  <app-photo-lightbox [photo]="selectedPhoto()!" (closeEvent)="selectedPhoto.set(null)" />
+}

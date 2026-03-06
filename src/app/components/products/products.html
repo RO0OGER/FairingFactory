@@ -8,6 +8,113 @@
       </p>
     </div>
 
+    <!-- Bike banner -->
+    @if (moto.activeBike()) {
+      <!-- Active bike set (logged-in garage bike OR guest bike) -->
+      <div class="garage-banner" [class.garage-banner--match]="filteredProducts().length > 0" [class.garage-banner--no-match]="filteredProducts().length === 0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11a2 2 0 012 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        </svg>
+        <span class="garage-banner__text">
+          Kits für: <strong>{{ moto.bikeName(moto.activeBike()!) }}</strong>
+          @if (filteredProducts().length === 0) {
+            <span class="garage-banner__no-match"> – Keine passenden Kits, alle werden angezeigt</span>
+          }
+        </span>
+        @if (auth.currentUser()) {
+          <button class="garage-banner__btn" (click)="moto.showGarageModal.set(true)">Ändern</button>
+        } @else {
+          <button class="garage-banner__btn" (click)="openGuestForm()">Ändern</button>
+          <button class="garage-banner__btn garage-banner__btn--ghost" (click)="moto.clearGuestBike()">✕</button>
+        }
+      </div>
+    } @else if (auth.currentUser()) {
+      <!-- Logged in but no bike selected -->
+      <div class="garage-banner garage-banner--prompt">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+        </svg>
+        <span class="garage-banner__text">Welches Motorrad fährst du? Wähle es aus, um passende Kits zu sehen.</span>
+        <button class="garage-banner__btn" (click)="moto.showGarageModal.set(true)">Motorrad auswählen</button>
+      </div>
+    } @else {
+      <!-- Not logged in, no guest bike -->
+      @if (!showGuestForm()) {
+        <div class="garage-banner garage-banner--prompt">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+          </svg>
+          <span class="garage-banner__text">Welches Motorrad fährst du? Wähle es aus, um passende Kits zu sehen.</span>
+          <button class="garage-banner__btn" (click)="openGuestForm()">Motorrad auswählen</button>
+        </div>
+      } @else {
+        <!-- Guest bike form (inline) -->
+        <div class="guest-bike-form">
+          <p class="guest-bike-form__title">Dein Motorrad auswählen</p>
+          <div class="guest-bike-form__fields">
+            <div class="guest-bike-form__field">
+              @if (guestMakesLoading()) {
+                <input class="form-input" placeholder="Marke lädt..." disabled />
+              } @else {
+                <input
+                  type="text"
+                  list="guest-makes-list"
+                  class="form-input"
+                  placeholder="Marke (z.B. Kawasaki)"
+                  [(ngModel)]="guestMakeInput"
+                  [ngModelOptions]="{standalone: true}"
+                  (change)="onGuestMakeChange()"
+                />
+                <datalist id="guest-makes-list">
+                  @for (make of guestMakes(); track make) {
+                    <option [value]="make"></option>
+                  }
+                </datalist>
+              }
+            </div>
+            <div class="guest-bike-form__field">
+              @if (guestModelsLoading()) {
+                <input class="form-input" placeholder="Modell lädt..." disabled />
+              } @else {
+                <input
+                  type="text"
+                  list="guest-models-list"
+                  class="form-input"
+                  placeholder="Modell (z.B. ZX-6R)"
+                  [(ngModel)]="guestModelInput"
+                  [ngModelOptions]="{standalone: true}"
+                  [disabled]="!guestMakeInput"
+                />
+                <datalist id="guest-models-list">
+                  @for (model of guestModels(); track model) {
+                    <option [value]="model"></option>
+                  }
+                </datalist>
+              }
+            </div>
+            <input
+              type="number"
+              class="form-input guest-bike-form__year"
+              placeholder="Baujahr (optional)"
+              [(ngModel)]="guestYearInput"
+              [ngModelOptions]="{standalone: true}"
+              min="1980"
+              [max]="2026"
+            />
+          </div>
+          <div class="guest-bike-form__actions">
+            <button
+              class="btn btn--primary btn--sm"
+              [disabled]="!guestMakeInput || !guestModelInput"
+              (click)="saveGuestBike()"
+            >Übernehmen</button>
+            <button class="btn btn--cancel btn--sm" (click)="showGuestForm.set(false)">Abbrechen</button>
+          </div>
+          <p class="guest-bike-form__hint">Wird nur temporär gespeichert. <a class="guest-bike-form__login-link" (click)="auth.showAuthModal.set(true)">Anmelden</a> für dauerhaften Zugang.</p>
+        </div>
+      }
+    }
+
     @if (loadingProducts()) {
       <div class="products__loading">
         <span>Lädt...</span>
@@ -16,8 +123,12 @@
       <p class="products__empty">Keine Produkte verfügbar. Bitte später erneut versuchen.</p>
     } @else {
       <div class="products__grid">
-        @for (product of products(); track product.id) {
-          <div class="product-card" [class.product-card--unavailable]="!product.available">
+        @for (product of (filteredProducts().length > 0 || !moto.activeBike() ? filteredProducts() : products()); track product.id) {
+          <div
+            class="product-card"
+            [class.product-card--unavailable]="!product.available"
+            (click)="goToDetail(product)"
+          >
             @if (product.image_url) {
               <img
                 [src]="product.image_url"
@@ -32,7 +143,7 @@
               <p class="product-card__years">Baujahr {{ product.years }}</p>
               <p class="product-card__desc">{{ product.description }}</p>
             </div>
-            <div class="product-card__footer">
+            <div class="product-card__footer" (click)="$event.stopPropagation()">
               <div class="product-card__price">
                 <span class="product-card__price-label">ab CHF</span>
                 <span class="product-card__price-amount">{{ product.price }}</span>

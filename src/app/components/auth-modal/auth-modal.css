@@ -151,6 +151,38 @@
   text-decoration: underline;
 }
 
+.garage-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.garage-step__icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #fff5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.garage-step__title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.garage-step__text {
+  font-size: 0.9rem;
+  color: #555;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
 .register-success {
   text-align: center;
   padding: 16px 0 8px;

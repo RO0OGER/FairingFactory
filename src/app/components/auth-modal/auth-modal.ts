@@ -1,6 +1,7 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { MotorcycleService } from '../../services/motorcycle.service';
 
 type Tab = 'login' | 'register';
 
@@ -12,12 +13,13 @@ type Tab = 'login' | 'register';
 })
 export class AuthModal {
   protected auth = inject(AuthService);
+  protected moto = inject(MotorcycleService);
   private fb = inject(FormBuilder);
 
   readonly activeTab = signal<Tab>('login');
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
-  readonly registerSuccess = signal(false);
+  readonly showGarageStep = signal(false);
 
   readonly loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -37,12 +39,13 @@ export class AuthModal {
   setTab(tab: Tab) {
     this.activeTab.set(tab);
     this.error.set(null);
+    this.showGarageStep.set(false);
   }
 
   close() {
     this.auth.showAuthModal.set(false);
+    this.showGarageStep.set(false);
     this.error.set(null);
-    this.registerSuccess.set(false);
     this.loginForm.reset();
     this.registerForm.reset();
   }
@@ -62,13 +65,7 @@ export class AuthModal {
 
     this.loading.set(false);
     if (error) {
-      if (error.message.toLowerCase().includes('email not confirmed')) {
-        this.error.set('Bitte bestätige zuerst deine E-Mail-Adresse (Link im Posteingang).');
-      } else if (error.message.toLowerCase().includes('invalid login credentials')) {
-        this.error.set('E-Mail oder Passwort ist falsch.');
-      } else {
-        this.error.set(error.message);
-      }
+      this.error.set('E-Mail oder Passwort ist falsch.');
     } else {
       this.close();
     }
@@ -91,8 +88,13 @@ export class AuthModal {
     if (error) {
       this.error.set('Registrierung fehlgeschlagen. Bitte versuche es erneut.');
     } else {
-      this.registerSuccess.set(true);
+      this.showGarageStep.set(true);
     }
+  }
+
+  goToGarage() {
+    this.close();
+    this.moto.showGarageModal.set(true);
   }
 
   isLoginInvalid(field: string): boolean {
