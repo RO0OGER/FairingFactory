@@ -23,6 +23,11 @@
       </button>
       <button
         class="admin-tab"
+        [class.admin-tab--active]="activeTab() === 'users'"
+        (click)="activeTab.set('users'); loadUsers()"
+      >Benutzer</button>
+      <button
+        class="admin-tab"
         [class.admin-tab--active]="activeTab() === 'community'"
         (click)="activeTab.set('community')"
       >
@@ -224,6 +229,84 @@
         }
       </div>
 
+    </main>
+  }
+
+  <!-- ── USERS TAB ── -->
+  @if (activeTab() === 'users') {
+    <main class="admin-main">
+      <div class="admin-section">
+        <div class="admin-section__head">
+          <h1 class="admin-section__title">Benutzer</h1>
+          <button class="btn btn--primary btn--sm" (click)="loadUsers()">Aktualisieren</button>
+        </div>
+
+        @if (usersLoading()) {
+          <div class="admin-state">Lädt Benutzer...</div>
+        } @else if (users().length === 0) {
+          <div class="admin-state"><p>Keine Benutzer gefunden.</p></div>
+        } @else {
+          <div class="user-table">
+            <div class="user-table__head">
+              <span>E-Mail</span>
+              <span>Registriert</span>
+              <span>Letzter Login</span>
+              <span>Rolle</span>
+              <span>Aktionen</span>
+            </div>
+
+            @for (user of users(); track user.id) {
+              <div class="user-table__row">
+                <div class="user-table__email">
+                  {{ user.email }}
+                  @if (user.id === auth.currentUser()?.id) {
+                    <span class="user-badge user-badge--self">Du</span>
+                  }
+                </div>
+
+                <div class="user-table__meta">
+                  {{ user.created_at | date: 'dd.MM.yyyy' }}
+                </div>
+
+                <div class="user-table__meta">
+                  {{ user.last_sign_in_at ? (user.last_sign_in_at | date: 'dd.MM.yyyy HH:mm') : '—' }}
+                </div>
+
+                <div>
+                  <span class="badge" [class.badge--green]="user.is_admin" [class.badge--grey]="!user.is_admin">
+                    {{ user.is_admin ? 'Admin' : 'Benutzer' }}
+                  </span>
+                </div>
+
+                <div class="user-table__actions">
+                  @if (deleteUserConfirmId() === user.id) {
+                    <span class="delete-confirm">Sicher löschen?</span>
+                    <button class="btn-action btn-action--danger" (click)="deleteUser(user.id)" [disabled]="deletingUser()">Ja</button>
+                    <button class="btn-action" (click)="cancelDeleteUser()">Nein</button>
+                  } @else {
+                    <button
+                      class="btn-action"
+                      [disabled]="togglingAdminId() === user.id || user.id === auth.currentUser()?.id"
+                      (click)="toggleAdmin(user)"
+                    >
+                      @if (togglingAdminId() === user.id) {
+                        Lädt...
+                      } @else {
+                        {{ user.is_admin ? 'Admin entfernen' : 'Zu Admin machen' }}
+                      }
+                    </button>
+                    <button
+                      class="btn-action btn-action--danger-outline"
+                      [disabled]="user.id === auth.currentUser()?.id"
+                      (click)="confirmDeleteUser(user.id)"
+                    >Löschen</button>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
     </main>
   }
 
