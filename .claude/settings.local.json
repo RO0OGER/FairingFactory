@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npx ng:*)",
       "Bash(xargs cat:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(python3:*)"
     ]
   }
 }

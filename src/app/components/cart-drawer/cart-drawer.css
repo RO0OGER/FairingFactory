@@ -196,6 +196,20 @@
   margin-bottom: 4px;
 }
 
+.drawer__delivery {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: #555555;
+  margin-bottom: 4px;
+}
+
+.drawer__delivery svg {
+  color: #888888;
+  flex-shrink: 0;
+}
+
 .btn--full {
   width: 100%;
   text-align: center;
