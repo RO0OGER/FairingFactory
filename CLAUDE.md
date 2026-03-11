@@ -185,14 +185,6 @@ fairing-factory/
 - Codekommentare können auf Deutsch oder Englisch sein
 - Fehlermeldungen für Nutzer auf Deutsch
 
-### Qualitätsanspruch
-- Fairing Factory positioniert sich als Qualitätsanbieter → Code und UI müssen professionell wirken
-- Kein „billiger" Look – sauber, modern, vertrauenswürdig
-
-### Umwelt & Nachhaltigkeit (Kommunikation)
-- Defekte Teile werden zurückgesendet statt entsorgt
-- Einzelteile werden weiterverwendet
-- Dieses Thema kann in Marketing-Texten und der Website betont werden
 
 ### Saisonalität
 - Motorradsaison in der Schweiz: ca. März–Oktober

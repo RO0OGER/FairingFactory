@@ -1,6 +1,6 @@
 <nav class="nav">
   <div class="nav__container">
-    <a routerLink="/" class="nav__brand">Fairing Factory</a>
+    <a routerLink="/" class="nav__brand"><img src="favicon.png" alt="Fairing Factory" class="nav__logo" /><span>Fairing Factory</span></a>
 
     <ul class="nav__links">
       <li><a routerLink="/" class="nav__link">Startseite</a></li>
@@ -96,7 +96,7 @@
         }
 
         <div class="pd-price">
-          <span class="pd-price__label">Preis inkl. MwSt., Zoll & Versand</span>
+          <span class="pd-price__label">Preis inkl. MwSt. & Versand, exkl. Zoll</span>
           <span class="pd-price__amount">CHF {{ product()!.price | number: '1.2-2' }}</span>
         </div>
 
@@ -117,6 +117,12 @@
               Anmelden &amp; kaufen
             }
           </button>
+          <div class="pd-delivery">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            Lieferzeit: 3–4 Wochen
+          </div>
         } @else {
           <div class="pd-unavailable">Dieses Produkt ist momentan nicht verfügbar.</div>
         }

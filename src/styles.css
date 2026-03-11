@@ -105,6 +105,16 @@ section {
   font-weight: 700;
   text-decoration: none;
   letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav__logo {
+  height: 32px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .nav__links {

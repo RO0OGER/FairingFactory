@@ -56,7 +56,13 @@
         <span>Gesamt</span>
         <span class="drawer__total-amount">CHF {{ cart.total.toFixed(2) }}</span>
       </div>
-      <p class="drawer__note">inkl. MwSt., Zoll und Versand</p>
+      <p class="drawer__note">inkl. MwSt. & Versand, exkl. Zoll</p>
+      <p class="drawer__delivery">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Lieferzeit: 3–4 Wochen
+      </p>
       <button class="btn btn--primary btn--full" (click)="orderNow()">Jetzt bestellen</button>
     </div>
   }

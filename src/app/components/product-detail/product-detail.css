@@ -229,6 +229,20 @@
   border-color: #1a1a1a;
 }
 
+.pd-delivery {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #555555;
+  margin-top: 8px;
+}
+
+.pd-delivery svg {
+  color: #888888;
+  flex-shrink: 0;
+}
+
 .pd-unavailable {
   text-align: center;
   padding: 14px;
